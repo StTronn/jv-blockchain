@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+option java_outer_classname = "BlockProto";
+
+message Block {
+  required string timeStamp = 1;
+  required int64 nonce = 2;
+  repeated bytes data = 3;
+  repeated bytes prevBlockHash = 4;
+  repeated bytes hash = 5;
+
+}
