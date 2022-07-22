@@ -45,55 +45,37 @@ public final class BlockProto {
     long getNonce();
 
     /**
-     * <code>repeated bytes data = 3;</code>
-     * @return A list containing the data.
+     * <code>required bytes transactions = 3;</code>
+     * @return Whether the transactions field is set.
      */
-    java.util.List<com.google.protobuf.ByteString> getDataList();
+    boolean hasTransactions();
     /**
-     * <code>repeated bytes data = 3;</code>
-     * @return The count of data.
+     * <code>required bytes transactions = 3;</code>
+     * @return The transactions.
      */
-    int getDataCount();
-    /**
-     * <code>repeated bytes data = 3;</code>
-     * @param index The index of the element to return.
-     * @return The data at the given index.
-     */
-    com.google.protobuf.ByteString getData(int index);
+    com.google.protobuf.ByteString getTransactions();
 
     /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @return A list containing the prevBlockHash.
+     * <code>required bytes prevBlockHash = 4;</code>
+     * @return Whether the prevBlockHash field is set.
      */
-    java.util.List<com.google.protobuf.ByteString> getPrevBlockHashList();
+    boolean hasPrevBlockHash();
     /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @return The count of prevBlockHash.
+     * <code>required bytes prevBlockHash = 4;</code>
+     * @return The prevBlockHash.
      */
-    int getPrevBlockHashCount();
-    /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @param index The index of the element to return.
-     * @return The prevBlockHash at the given index.
-     */
-    com.google.protobuf.ByteString getPrevBlockHash(int index);
+    com.google.protobuf.ByteString getPrevBlockHash();
 
     /**
-     * <code>repeated bytes hash = 5;</code>
-     * @return A list containing the hash.
+     * <code>required bytes hash = 5;</code>
+     * @return Whether the hash field is set.
      */
-    java.util.List<com.google.protobuf.ByteString> getHashList();
+    boolean hasHash();
     /**
-     * <code>repeated bytes hash = 5;</code>
-     * @return The count of hash.
+     * <code>required bytes hash = 5;</code>
+     * @return The hash.
      */
-    int getHashCount();
-    /**
-     * <code>repeated bytes hash = 5;</code>
-     * @param index The index of the element to return.
-     * @return The hash at the given index.
-     */
-    com.google.protobuf.ByteString getHash(int index);
+    com.google.protobuf.ByteString getHash();
   }
   /**
    * Protobuf type {@code Block}
@@ -109,9 +91,9 @@ public final class BlockProto {
     }
     private Block() {
       timeStamp_ = "";
-      data_ = java.util.Collections.emptyList();
-      prevBlockHash_ = java.util.Collections.emptyList();
-      hash_ = java.util.Collections.emptyList();
+      transactions_ = com.google.protobuf.ByteString.EMPTY;
+      prevBlockHash_ = com.google.protobuf.ByteString.EMPTY;
+      hash_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -157,27 +139,18 @@ public final class BlockProto {
               break;
             }
             case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) != 0)) {
-                data_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-                mutable_bitField0_ |= 0x00000004;
-              }
-              data_.add(input.readBytes());
+              bitField0_ |= 0x00000004;
+              transactions_ = input.readBytes();
               break;
             }
             case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) != 0)) {
-                prevBlockHash_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              prevBlockHash_.add(input.readBytes());
+              bitField0_ |= 0x00000008;
+              prevBlockHash_ = input.readBytes();
               break;
             }
             case 42: {
-              if (!((mutable_bitField0_ & 0x00000010) != 0)) {
-                hash_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-                mutable_bitField0_ |= 0x00000010;
-              }
-              hash_.add(input.readBytes());
+              bitField0_ |= 0x00000010;
+              hash_ = input.readBytes();
               break;
             }
             default: {
@@ -197,15 +170,6 @@ public final class BlockProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000004) != 0)) {
-          data_ = java.util.Collections.unmodifiableList(data_); // C
-        }
-        if (((mutable_bitField0_ & 0x00000008) != 0)) {
-          prevBlockHash_ = java.util.Collections.unmodifiableList(prevBlockHash_); // C
-        }
-        if (((mutable_bitField0_ & 0x00000010) != 0)) {
-          hash_ = java.util.Collections.unmodifiableList(hash_); // C
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -291,85 +255,61 @@ public final class BlockProto {
       return nonce_;
     }
 
-    public static final int DATA_FIELD_NUMBER = 3;
-    private java.util.List<com.google.protobuf.ByteString> data_;
+    public static final int TRANSACTIONS_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString transactions_;
     /**
-     * <code>repeated bytes data = 3;</code>
-     * @return A list containing the data.
+     * <code>required bytes transactions = 3;</code>
+     * @return Whether the transactions field is set.
      */
     @java.lang.Override
-    public java.util.List<com.google.protobuf.ByteString>
-        getDataList() {
-      return data_;
+    public boolean hasTransactions() {
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
-     * <code>repeated bytes data = 3;</code>
-     * @return The count of data.
+     * <code>required bytes transactions = 3;</code>
+     * @return The transactions.
      */
-    public int getDataCount() {
-      return data_.size();
-    }
-    /**
-     * <code>repeated bytes data = 3;</code>
-     * @param index The index of the element to return.
-     * @return The data at the given index.
-     */
-    public com.google.protobuf.ByteString getData(int index) {
-      return data_.get(index);
+    @java.lang.Override
+    public com.google.protobuf.ByteString getTransactions() {
+      return transactions_;
     }
 
     public static final int PREVBLOCKHASH_FIELD_NUMBER = 4;
-    private java.util.List<com.google.protobuf.ByteString> prevBlockHash_;
+    private com.google.protobuf.ByteString prevBlockHash_;
     /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @return A list containing the prevBlockHash.
+     * <code>required bytes prevBlockHash = 4;</code>
+     * @return Whether the prevBlockHash field is set.
      */
     @java.lang.Override
-    public java.util.List<com.google.protobuf.ByteString>
-        getPrevBlockHashList() {
+    public boolean hasPrevBlockHash() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>required bytes prevBlockHash = 4;</code>
+     * @return The prevBlockHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPrevBlockHash() {
       return prevBlockHash_;
-    }
-    /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @return The count of prevBlockHash.
-     */
-    public int getPrevBlockHashCount() {
-      return prevBlockHash_.size();
-    }
-    /**
-     * <code>repeated bytes prevBlockHash = 4;</code>
-     * @param index The index of the element to return.
-     * @return The prevBlockHash at the given index.
-     */
-    public com.google.protobuf.ByteString getPrevBlockHash(int index) {
-      return prevBlockHash_.get(index);
     }
 
     public static final int HASH_FIELD_NUMBER = 5;
-    private java.util.List<com.google.protobuf.ByteString> hash_;
+    private com.google.protobuf.ByteString hash_;
     /**
-     * <code>repeated bytes hash = 5;</code>
-     * @return A list containing the hash.
+     * <code>required bytes hash = 5;</code>
+     * @return Whether the hash field is set.
      */
     @java.lang.Override
-    public java.util.List<com.google.protobuf.ByteString>
-        getHashList() {
+    public boolean hasHash() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <code>required bytes hash = 5;</code>
+     * @return The hash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getHash() {
       return hash_;
-    }
-    /**
-     * <code>repeated bytes hash = 5;</code>
-     * @return The count of hash.
-     */
-    public int getHashCount() {
-      return hash_.size();
-    }
-    /**
-     * <code>repeated bytes hash = 5;</code>
-     * @param index The index of the element to return.
-     * @return The hash at the given index.
-     */
-    public com.google.protobuf.ByteString getHash(int index) {
-      return hash_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -387,6 +327,18 @@ public final class BlockProto {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasTransactions()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasPrevBlockHash()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasHash()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -400,14 +352,14 @@ public final class BlockProto {
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeInt64(2, nonce_);
       }
-      for (int i = 0; i < data_.size(); i++) {
-        output.writeBytes(3, data_.get(i));
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeBytes(3, transactions_);
       }
-      for (int i = 0; i < prevBlockHash_.size(); i++) {
-        output.writeBytes(4, prevBlockHash_.get(i));
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeBytes(4, prevBlockHash_);
       }
-      for (int i = 0; i < hash_.size(); i++) {
-        output.writeBytes(5, hash_.get(i));
+      if (((bitField0_ & 0x00000010) != 0)) {
+        output.writeBytes(5, hash_);
       }
       unknownFields.writeTo(output);
     }
@@ -425,32 +377,17 @@ public final class BlockProto {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, nonce_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < data_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(data_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getDataList().size();
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, transactions_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < prevBlockHash_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(prevBlockHash_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getPrevBlockHashList().size();
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, prevBlockHash_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < hash_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(hash_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getHashList().size();
+      if (((bitField0_ & 0x00000010) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, hash_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -477,12 +414,21 @@ public final class BlockProto {
         if (getNonce()
             != other.getNonce()) return false;
       }
-      if (!getDataList()
-          .equals(other.getDataList())) return false;
-      if (!getPrevBlockHashList()
-          .equals(other.getPrevBlockHashList())) return false;
-      if (!getHashList()
-          .equals(other.getHashList())) return false;
+      if (hasTransactions() != other.hasTransactions()) return false;
+      if (hasTransactions()) {
+        if (!getTransactions()
+            .equals(other.getTransactions())) return false;
+      }
+      if (hasPrevBlockHash() != other.hasPrevBlockHash()) return false;
+      if (hasPrevBlockHash()) {
+        if (!getPrevBlockHash()
+            .equals(other.getPrevBlockHash())) return false;
+      }
+      if (hasHash() != other.hasHash()) return false;
+      if (hasHash()) {
+        if (!getHash()
+            .equals(other.getHash())) return false;
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -503,17 +449,17 @@ public final class BlockProto {
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getNonce());
       }
-      if (getDataCount() > 0) {
-        hash = (37 * hash) + DATA_FIELD_NUMBER;
-        hash = (53 * hash) + getDataList().hashCode();
+      if (hasTransactions()) {
+        hash = (37 * hash) + TRANSACTIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getTransactions().hashCode();
       }
-      if (getPrevBlockHashCount() > 0) {
+      if (hasPrevBlockHash()) {
         hash = (37 * hash) + PREVBLOCKHASH_FIELD_NUMBER;
-        hash = (53 * hash) + getPrevBlockHashList().hashCode();
+        hash = (53 * hash) + getPrevBlockHash().hashCode();
       }
-      if (getHashCount() > 0) {
+      if (hasHash()) {
         hash = (37 * hash) + HASH_FIELD_NUMBER;
-        hash = (53 * hash) + getHashList().hashCode();
+        hash = (53 * hash) + getHash().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -652,11 +598,11 @@ public final class BlockProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         nonce_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        data_ = java.util.Collections.emptyList();
+        transactions_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
-        prevBlockHash_ = java.util.Collections.emptyList();
+        prevBlockHash_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000008);
-        hash_ = java.util.Collections.emptyList();
+        hash_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
@@ -694,19 +640,16 @@ public final class BlockProto {
           result.nonce_ = nonce_;
           to_bitField0_ |= 0x00000002;
         }
-        if (((bitField0_ & 0x00000004) != 0)) {
-          data_ = java.util.Collections.unmodifiableList(data_);
-          bitField0_ = (bitField0_ & ~0x00000004);
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          to_bitField0_ |= 0x00000004;
         }
-        result.data_ = data_;
-        if (((bitField0_ & 0x00000008) != 0)) {
-          prevBlockHash_ = java.util.Collections.unmodifiableList(prevBlockHash_);
-          bitField0_ = (bitField0_ & ~0x00000008);
+        result.transactions_ = transactions_;
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          to_bitField0_ |= 0x00000008;
         }
         result.prevBlockHash_ = prevBlockHash_;
-        if (((bitField0_ & 0x00000010) != 0)) {
-          hash_ = java.util.Collections.unmodifiableList(hash_);
-          bitField0_ = (bitField0_ & ~0x00000010);
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          to_bitField0_ |= 0x00000010;
         }
         result.hash_ = hash_;
         result.bitField0_ = to_bitField0_;
@@ -766,35 +709,14 @@ public final class BlockProto {
         if (other.hasNonce()) {
           setNonce(other.getNonce());
         }
-        if (!other.data_.isEmpty()) {
-          if (data_.isEmpty()) {
-            data_ = other.data_;
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            ensureDataIsMutable();
-            data_.addAll(other.data_);
-          }
-          onChanged();
+        if (other.hasTransactions()) {
+          setTransactions(other.getTransactions());
         }
-        if (!other.prevBlockHash_.isEmpty()) {
-          if (prevBlockHash_.isEmpty()) {
-            prevBlockHash_ = other.prevBlockHash_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensurePrevBlockHashIsMutable();
-            prevBlockHash_.addAll(other.prevBlockHash_);
-          }
-          onChanged();
+        if (other.hasPrevBlockHash()) {
+          setPrevBlockHash(other.getPrevBlockHash());
         }
-        if (!other.hash_.isEmpty()) {
-          if (hash_.isEmpty()) {
-            hash_ = other.hash_;
-            bitField0_ = (bitField0_ & ~0x00000010);
-          } else {
-            ensureHashIsMutable();
-            hash_.addAll(other.hash_);
-          }
-          onChanged();
+        if (other.hasHash()) {
+          setHash(other.getHash());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -807,6 +729,15 @@ public final class BlockProto {
           return false;
         }
         if (!hasNonce()) {
+          return false;
+        }
+        if (!hasTransactions()) {
+          return false;
+        }
+        if (!hasPrevBlockHash()) {
+          return false;
+        }
+        if (!hasHash()) {
           return false;
         }
         return true;
@@ -955,257 +886,128 @@ public final class BlockProto {
         return this;
       }
 
-      private java.util.List<com.google.protobuf.ByteString> data_ = java.util.Collections.emptyList();
-      private void ensureDataIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
-          data_ = new java.util.ArrayList<com.google.protobuf.ByteString>(data_);
-          bitField0_ |= 0x00000004;
-         }
-      }
+      private com.google.protobuf.ByteString transactions_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>repeated bytes data = 3;</code>
-       * @return A list containing the data.
+       * <code>required bytes transactions = 3;</code>
+       * @return Whether the transactions field is set.
        */
-      public java.util.List<com.google.protobuf.ByteString>
-          getDataList() {
-        return ((bitField0_ & 0x00000004) != 0) ?
-                 java.util.Collections.unmodifiableList(data_) : data_;
+      @java.lang.Override
+      public boolean hasTransactions() {
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
-       * <code>repeated bytes data = 3;</code>
-       * @return The count of data.
+       * <code>required bytes transactions = 3;</code>
+       * @return The transactions.
        */
-      public int getDataCount() {
-        return data_.size();
+      @java.lang.Override
+      public com.google.protobuf.ByteString getTransactions() {
+        return transactions_;
       }
       /**
-       * <code>repeated bytes data = 3;</code>
-       * @param index The index of the element to return.
-       * @return The data at the given index.
-       */
-      public com.google.protobuf.ByteString getData(int index) {
-        return data_.get(index);
-      }
-      /**
-       * <code>repeated bytes data = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The data to set.
+       * <code>required bytes transactions = 3;</code>
+       * @param value The transactions to set.
        * @return This builder for chaining.
        */
-      public Builder setData(
-          int index, com.google.protobuf.ByteString value) {
+      public Builder setTransactions(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureDataIsMutable();
-        data_.set(index, value);
+  bitField0_ |= 0x00000004;
+        transactions_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated bytes data = 3;</code>
-       * @param value The data to add.
+       * <code>required bytes transactions = 3;</code>
        * @return This builder for chaining.
        */
-      public Builder addData(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureDataIsMutable();
-        data_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes data = 3;</code>
-       * @param values The data to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllData(
-          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
-        ensureDataIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, data_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes data = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearData() {
-        data_ = java.util.Collections.emptyList();
+      public Builder clearTransactions() {
         bitField0_ = (bitField0_ & ~0x00000004);
+        transactions_ = getDefaultInstance().getTransactions();
         onChanged();
         return this;
       }
 
-      private java.util.List<com.google.protobuf.ByteString> prevBlockHash_ = java.util.Collections.emptyList();
-      private void ensurePrevBlockHashIsMutable() {
-        if (!((bitField0_ & 0x00000008) != 0)) {
-          prevBlockHash_ = new java.util.ArrayList<com.google.protobuf.ByteString>(prevBlockHash_);
-          bitField0_ |= 0x00000008;
-         }
-      }
+      private com.google.protobuf.ByteString prevBlockHash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @return A list containing the prevBlockHash.
+       * <code>required bytes prevBlockHash = 4;</code>
+       * @return Whether the prevBlockHash field is set.
        */
-      public java.util.List<com.google.protobuf.ByteString>
-          getPrevBlockHashList() {
-        return ((bitField0_ & 0x00000008) != 0) ?
-                 java.util.Collections.unmodifiableList(prevBlockHash_) : prevBlockHash_;
+      @java.lang.Override
+      public boolean hasPrevBlockHash() {
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @return The count of prevBlockHash.
+       * <code>required bytes prevBlockHash = 4;</code>
+       * @return The prevBlockHash.
        */
-      public int getPrevBlockHashCount() {
-        return prevBlockHash_.size();
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPrevBlockHash() {
+        return prevBlockHash_;
       }
       /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @param index The index of the element to return.
-       * @return The prevBlockHash at the given index.
-       */
-      public com.google.protobuf.ByteString getPrevBlockHash(int index) {
-        return prevBlockHash_.get(index);
-      }
-      /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @param index The index to set the value at.
+       * <code>required bytes prevBlockHash = 4;</code>
        * @param value The prevBlockHash to set.
        * @return This builder for chaining.
        */
-      public Builder setPrevBlockHash(
-          int index, com.google.protobuf.ByteString value) {
+      public Builder setPrevBlockHash(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensurePrevBlockHashIsMutable();
-        prevBlockHash_.set(index, value);
+  bitField0_ |= 0x00000008;
+        prevBlockHash_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @param value The prevBlockHash to add.
-       * @return This builder for chaining.
-       */
-      public Builder addPrevBlockHash(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensurePrevBlockHashIsMutable();
-        prevBlockHash_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
-       * @param values The prevBlockHash to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllPrevBlockHash(
-          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
-        ensurePrevBlockHashIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, prevBlockHash_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes prevBlockHash = 4;</code>
+       * <code>required bytes prevBlockHash = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearPrevBlockHash() {
-        prevBlockHash_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
+        prevBlockHash_ = getDefaultInstance().getPrevBlockHash();
         onChanged();
         return this;
       }
 
-      private java.util.List<com.google.protobuf.ByteString> hash_ = java.util.Collections.emptyList();
-      private void ensureHashIsMutable() {
-        if (!((bitField0_ & 0x00000010) != 0)) {
-          hash_ = new java.util.ArrayList<com.google.protobuf.ByteString>(hash_);
-          bitField0_ |= 0x00000010;
-         }
-      }
+      private com.google.protobuf.ByteString hash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>repeated bytes hash = 5;</code>
-       * @return A list containing the hash.
+       * <code>required bytes hash = 5;</code>
+       * @return Whether the hash field is set.
        */
-      public java.util.List<com.google.protobuf.ByteString>
-          getHashList() {
-        return ((bitField0_ & 0x00000010) != 0) ?
-                 java.util.Collections.unmodifiableList(hash_) : hash_;
+      @java.lang.Override
+      public boolean hasHash() {
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <code>repeated bytes hash = 5;</code>
-       * @return The count of hash.
+       * <code>required bytes hash = 5;</code>
+       * @return The hash.
        */
-      public int getHashCount() {
-        return hash_.size();
+      @java.lang.Override
+      public com.google.protobuf.ByteString getHash() {
+        return hash_;
       }
       /**
-       * <code>repeated bytes hash = 5;</code>
-       * @param index The index of the element to return.
-       * @return The hash at the given index.
-       */
-      public com.google.protobuf.ByteString getHash(int index) {
-        return hash_.get(index);
-      }
-      /**
-       * <code>repeated bytes hash = 5;</code>
-       * @param index The index to set the value at.
+       * <code>required bytes hash = 5;</code>
        * @param value The hash to set.
        * @return This builder for chaining.
        */
-      public Builder setHash(
-          int index, com.google.protobuf.ByteString value) {
+      public Builder setHash(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureHashIsMutable();
-        hash_.set(index, value);
+  bitField0_ |= 0x00000010;
+        hash_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated bytes hash = 5;</code>
-       * @param value The hash to add.
-       * @return This builder for chaining.
-       */
-      public Builder addHash(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureHashIsMutable();
-        hash_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes hash = 5;</code>
-       * @param values The hash to add.
-       * @return This builder for chaining.
-       */
-      public Builder addAllHash(
-          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
-        ensureHashIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, hash_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated bytes hash = 5;</code>
+       * <code>required bytes hash = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearHash() {
-        hash_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
+        hash_ = getDefaultInstance().getHash();
         onChanged();
         return this;
       }
@@ -1276,10 +1078,10 @@ public final class BlockProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013Block.proto\"\\\n\005Block\022\021\n\ttimeStamp\030\001 \002(" +
-      "\t\022\r\n\005nonce\030\002 \002(\003\022\014\n\004data\030\003 \003(\014\022\025\n\rprevBl" +
-      "ockHash\030\004 \003(\014\022\014\n\004hash\030\005 \003(\014B\014B\nBlockProt" +
-      "o"
+      "\n\013Block.proto\"d\n\005Block\022\021\n\ttimeStamp\030\001 \002(" +
+      "\t\022\r\n\005nonce\030\002 \002(\003\022\024\n\014transactions\030\003 \002(\014\022\025" +
+      "\n\rprevBlockHash\030\004 \002(\014\022\014\n\004hash\030\005 \002(\014B\014B\nB" +
+      "lockProto"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1290,7 +1092,7 @@ public final class BlockProto {
     internal_static_Block_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Block_descriptor,
-        new java.lang.String[] { "TimeStamp", "Nonce", "Data", "PrevBlockHash", "Hash", });
+        new java.lang.String[] { "TimeStamp", "Nonce", "Transactions", "PrevBlockHash", "Hash", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -1,6 +1,8 @@
 package Blockchain;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -21,7 +23,7 @@ public class ProofOfWork {
 
     public void run (){
         int maxNonce = Integer.MAX_VALUE;
-        System.out.printf("Mining the block containing \"%s\"\n", new String(this.block.data));
+        System.out.printf("Mining the block containing \"%s\"\n", new String(this.block.transactions[0].ID));
         while (nonce <= maxNonce -1) {
           try {
               byte[] toHash = prepareData(nonce++);
@@ -45,7 +47,9 @@ public class ProofOfWork {
         System.out.println(nonce);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try {
-            output.write(this.block.data);
+            for(Transaction tx:this.block.transactions){
+                output.write(tx.hashTx());
+            }
             output.write(this.block.timeStamp.getBytes(StandardCharsets.UTF_8));
             output.write(this.block.prevBlockHash);
             output.write(targetBits);
@@ -57,6 +61,7 @@ public class ProofOfWork {
 
         return output.toByteArray();
     }
+
 
     public boolean validate() {
         byte[] toHash = prepareData(this.block.nonce);

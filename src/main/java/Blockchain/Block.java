@@ -1,19 +1,23 @@
 package Blockchain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 
 public class Block {
     public String timeStamp;
-    public byte[] data;
+    public Transaction[] transactions;
     public byte[] prevBlockHash;
     public byte[] hash;
     public int nonce;
 
-    Block(String data, byte[] prevBlockHash){
+    Block(Transaction[] transactions, byte[] prevBlockHash){
         this.timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new java.util.Date());
-        this.data=data.getBytes();
+        this.transactions=transactions;
         this.prevBlockHash=prevBlockHash;
         try {
             ProofOfWork pow = new ProofOfWork(this);
@@ -25,18 +29,23 @@ public class Block {
         }
     }
 
-    Block(String timeStamp,byte[] data,byte[] prevBlockHash,byte[] hash,int nonce){
+    //required when we deseralize the data from proto
+    Block(String timeStamp,Transaction[] transactions,byte[] prevBlockHash,byte[] hash,int nonce){
        this.timeStamp=timeStamp;
-       this.data=data;
+       this.transactions=transactions;
        this.prevBlockHash=prevBlockHash;
        this.hash=hash;
        this.nonce=nonce;
 
     }
 
-    public byte[] setHash() throws NoSuchAlgorithmException {
+    //calculate the hash of whole block based on its content
+    public byte[] setHash() throws NoSuchAlgorithmException, IOException {
         byte[] _timestamp = timeStamp.getBytes();
-        hash = joinByteStream(_timestamp,data,prevBlockHash);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(transactions);
+        hash = joinByteStream(_timestamp,out.toByteArray(),prevBlockHash);
         MessageDigest md = MessageDigest.getInstance("SHA256");
         md.update(hash);
         return md.digest();
