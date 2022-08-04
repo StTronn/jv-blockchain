@@ -62,6 +62,11 @@ public class Blockchain implements BlockchainInterface {
          return  utxo;
     }
 
+    public void mineBlock(Transaction[] transactions){
+         addBlock(transactions);
+    }
+
+
     private Map<String,List<Integer>> getSpentTxn(String address){
 
         Map<String,List<Integer>> spentTxn = new HashMap<String,List<Integer>>();
@@ -71,7 +76,7 @@ public class Blockchain implements BlockchainInterface {
                 for(TXInput in:transaction.vin){
                     if( in.txId!=null && in.canUnlockOutput(address)) {
                         if(spentTxn.get(Arrays.toString(in.txId))==null){
-                            ArrayList<Integer> a = (ArrayList<Integer>) spentTxn.get(Arrays.toString(in.txId));
+                            List<Integer> a =  new ArrayList<Integer>();
                             a.add(in.voutIndex);
                             spentTxn.put(Arrays.toString(in.txId),a);
                         } else{
