@@ -1,5 +1,9 @@
 package Blockchain;
 
+import Transaction.Transaction;
+import  Transaction.TXInput;
+import  Transaction.TXOutput;
+
 import java.util.*;
 
 public class Blockchain implements BlockchainInterface {

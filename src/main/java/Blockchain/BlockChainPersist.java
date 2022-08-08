@@ -1,6 +1,4 @@
 package Blockchain;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 import redis.clients.jedis.*;
 
 import java.nio.charset.StandardCharsets;

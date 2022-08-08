@@ -1,4 +1,4 @@
-package Blockchain;
+package Transaction;
 
 public class TransactionMain {
 //   Transaction coinbase = Transaction.newCoinbaseTxn("rishav","script");

@@ -1,6 +1,9 @@
 package Blockchain;
 
-import java.lang.reflect.AnnotatedArrayType;
+import Transaction.Transaction;
+import Transaction.TXOutput;
+import Transaction.TXInput;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

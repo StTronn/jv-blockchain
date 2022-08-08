@@ -1,23 +1,20 @@
-package Blockchain;
+package Transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Transaction {
     static final int reward = 100;
     //hash of the current values
-    byte[] ID;
-    List<TXInput> vin;
-    List<TXOutput> vout;
+    public byte[] ID;
+    public List<TXInput> vin;
+    public List<TXOutput> vout;
 
-    Transaction(List<TXInput> vin, List<TXOutput>  vout){
+    public Transaction(List<TXInput> vin, List<TXOutput> vout){
         this.vin = vin;
         this.vout = vout;
         this.getId();
