@@ -52,7 +52,6 @@ public class Transaction {
         for(TXOutput out:vout){
             outputStream.write(out.hashTxOutput());
         }
-        System.out.println(Arrays.toString(outputStream.toByteArray()));
         return  outputStream.toByteArray();
     }
 

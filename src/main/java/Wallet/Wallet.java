@@ -2,37 +2,45 @@ package Wallet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
-import java.util.HexFormat;
 
 public class Wallet {
+    //TODO: make publicKey & privateKey private
     PublicKey publicKey;
     PrivateKey privateKey;
-    static final byte[] version = new byte[]{0x00} ;
-    static final int addressChecksum = 4;
+    private static final byte[] version = new byte[]{0x00} ;
+    private static final int addressChecksum = 4;
 
     //generate wallet
-    Wallet() {
+    public Wallet() {
         try {
             newKeyPair();
         } catch (Exception e) {
+            System.out.println(e.fillInStackTrace());
             System.out.print(e.toString());
             System.exit(1);
         }
     }
 
+
     public String getAddress() {
-        byte[] pubKeyHash = hashPubKey(publicKey.getEncoded());
+        return Wallet.getAddressFromPubKey(publicKey.getEncoded());
+    }
+
+    public static String getAddressFromPubKey(byte[] pubKey){
+        byte[] pubKeyHash = hashPubKey(pubKey);
+        return getAddressFromHashPubKey(pubKeyHash);
+    }
+
+    public static String getAddressFromHashPubKey(byte[] pubKeyHash){
         byte[] versionPayload =appendVersion(pubKeyHash);
         byte[] checksum = getChecksum(versionPayload);
         byte[] fullPayload = appendChecksum(versionPayload,checksum);
         return Base58.encode(fullPayload);
-
     }
 
-    private byte[] appendChecksum(byte[] versionPayload,byte[] checksum)  {
+    private static byte[] appendChecksum(byte[] versionPayload,byte[] checksum)  {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(versionPayload);
@@ -46,7 +54,7 @@ public class Wallet {
         }
     }
 
-    private byte[] appendVersion(byte[] pubKeyHash){
+    private static byte[] appendVersion(byte[] pubKeyHash){
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             outputStream.write(pubKeyHash);
@@ -60,17 +68,7 @@ public class Wallet {
 
     }
 
-    static public byte[] hashPubKey(byte[] key) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA256");
-            md.update(key);
-            return Ripemd160.getHash(md.digest());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private byte[] getChecksum(byte[] pubKey) {
+    private static byte[] getChecksum(byte[] pubKey) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA256");
             md.update(pubKey);
@@ -83,6 +81,16 @@ public class Wallet {
             return null;
         }
 
+    }
+
+    static public byte[] hashPubKey(byte[] key) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA256");
+            md.update(key);
+            return Ripemd160.getHash(md.digest());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void newKeyPair() throws Exception {

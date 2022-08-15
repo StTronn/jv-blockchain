@@ -1,22 +1,22 @@
 package Blockchain;
 
 import Transaction.Transaction;
-import  Transaction.TXInput;
-import  Transaction.TXOutput;
+import Transaction.TXInput;
+import Transaction.TXOutput;
 
 import java.util.*;
 
 public class Blockchain implements BlockchainInterface {
     public List<Block> blocks;
 
-     Blockchain(){
-        Block genesisBlock = newGenesisBlock();
+    Blockchain(String genesisAddress) {
+        Block genesisBlock = newGenesisBlock(genesisAddress);
         this.blocks = new ArrayList<Block>();
         this.blocks.add(genesisBlock);
     }
 
-    public void addBlock(Transaction[] transactions){
-        if(this.blocks == null ){
+    public void addBlock(Transaction[] transactions) {
+        if (this.blocks == null) {
             this.blocks = new ArrayList<Block>();
         }
         Block prevBlock = this.blocks.get(blocks.size() - 1);
@@ -26,64 +26,65 @@ public class Blockchain implements BlockchainInterface {
     }
 
 
-    private Block newGenesisBlock() {
-         List<Transaction> txn = Arrays.asList(Transaction.newCoinbaseTxn("rishav","paid 100 to rishav"));
-        return new Block(txn.toArray(new Transaction[txn.size()]),new byte[0]);
+    private Block newGenesisBlock(String genesisAddress) {
+        List<Transaction> txn = Arrays.asList(Transaction.newCoinbaseTxn(genesisAddress, "paid 100 to rishav"));
+        return new Block(txn.toArray(new Transaction[txn.size()]), new byte[0]);
     }
 
-    public List<Transaction> findUnspentTransaction(String address){
+    public List<Transaction> findUnspentTransaction(String address) {
         List<Transaction> unspentTxn = new ArrayList<Transaction>();
 
-        Map<String,List<Integer>> spentTxn = getSpentTxn(address);
+        Map<String, List<Integer>> spentTxn = getSpentTxn(address);
 
-        for(Block block:blocks){
-            for(Transaction transaction:block.transactions){
-                for(int index=0;index<transaction.vout.size();index++){
-                    if( spentTxn.get(Arrays.toString(transaction.ID))!=null ){
+        for (Block block : blocks) {
+            for (Transaction transaction : block.transactions) {
+                for (int index = 0; index < transaction.vout.size(); index++) {
+                    if (spentTxn.get(Arrays.toString(transaction.ID)) != null) {
                         ArrayList<Integer> arr = (ArrayList<Integer>) spentTxn.get(Arrays.toString(transaction.ID));
-                        for(Integer spentIndex:arr){
-                            if(spentIndex!=index && transaction.vout.get(index).canBeUnlockedWithInput(address)) unspentTxn.add(transaction);
+                        for (Integer spentIndex : arr) {
+                            if (spentIndex != index && transaction.vout.get(index).isLockedWithKey(address))
+                                unspentTxn.add(transaction);
                         }
-                    } else{
-                        if(transaction.vout.get(index).canBeUnlockedWithInput(address)) unspentTxn.add(transaction);
+                    } else {
+                        if (transaction.vout.get(index).isLockedWithKey(address)) unspentTxn.add(transaction);
                     }
                 }
             }
         }
-       return unspentTxn;
+        return unspentTxn;
     }
 
-    public List<TXOutput> findUTXO(String address){
+    public List<TXOutput> findUTXO(String address) {
         List<TXOutput> utxo = new ArrayList<TXOutput>();
         List<Transaction> transactions = findUnspentTransaction(address);
-         for(Transaction transaction:transactions){
-             for(TXOutput out:transaction.vout){
-                 if(out.canBeUnlockedWithInput(address)){
+        for (Transaction transaction : transactions) {
+            for (TXOutput out : transaction.vout) {
+                if (out.isLockedWithKey(address)) {
                     utxo.add(out);
-                 }
-             }
-         }
-         return  utxo;
+                }
+            }
+        }
+        return utxo;
     }
 
-    public void mineBlock(Transaction[] transactions){
-         addBlock(transactions);
+    public void mineBlock(Transaction[] transactions) {
+        addBlock(transactions);
     }
 
 
-    private Map<String,List<Integer>> getSpentTxn(String address){
+    private Map<String, List<Integer>> getSpentTxn(String address) {
 
-        Map<String,List<Integer>> spentTxn = new HashMap<String,List<Integer>>();
-        for (Block block:blocks){
-            for(Transaction transaction:block.transactions){
+        Map<String, List<Integer>> spentTxn = new HashMap<String, List<Integer>>();
+        for (Block block : blocks) {
+            for (Transaction transaction : block.transactions) {
                 //TODO: check if coinbase txn
-                for(TXInput in:transaction.vin){
-                    if( in.txId!=null && in.canUnlockOutput(address)) {
-                        if(spentTxn.get(Arrays.toString(in.txId))==null){
-                            List<Integer> a =  new ArrayList<Integer>();
+                for (TXInput in : transaction.vin) {
+                    if (in.txId != null && in.canUnlockOutput(address)) {
+                        if (spentTxn.get(Arrays.toString(in.txId)) == null) {
+                            List<Integer> a = new ArrayList<Integer>();
                             a.add(in.voutIndex);
-                            spentTxn.put(Arrays.toString(in.txId),a);
-                        } else{
+                            spentTxn.put(Arrays.toString(in.txId), a);
+                        } else {
                             spentTxn.put(Arrays.toString(in.txId), new ArrayList<Integer>(in.voutIndex));
                         }
                     }

@@ -13,13 +13,13 @@ public class TXInput {
     public int voutIndex;
     public byte[] Signature;
     public byte[] pubKey;
-    public String scriptSig;
+    public String address;
 
     //int vout is the index of the txin array of given txId
-    public TXInput(byte[] txId, int voutIndex, String scriptSig) {
+    public TXInput(byte[] txId, int voutIndex, String address) {
         this.txId = txId;
         this.voutIndex = voutIndex;
-        this.scriptSig = scriptSig;
+        this.address = address;
     }
 
     public boolean usesKey(byte[] pubKeyHash) {
@@ -30,19 +30,20 @@ public class TXInput {
     public byte[] hashTxInput() throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
+            if(txId == null) return  new byte[]{};
 
             if (txId != null) outputStream.write(txId);
             outputStream.write(voutIndex);
-            outputStream.write(scriptSig.getBytes(StandardCharsets.UTF_8));
+            outputStream.write(address.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
 
-            System.out.println(e.toString());
+            System.out.println("txInput hashing cannot convert to byte hash " + e.toString());
         }
         return outputStream.toByteArray();
     }
 
-    public boolean canUnlockOutput(String scriptPubKey) {
-        return scriptSig.equals(scriptPubKey);
+    public boolean canUnlockOutput(String address) {
+        return address.equals(this.address);
     }
 
     private byte[] bigIntToByteArray(final int i) {

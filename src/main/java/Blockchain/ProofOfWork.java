@@ -23,7 +23,7 @@ public class ProofOfWork {
 
     public void run (){
         int maxNonce = Integer.MAX_VALUE;
-        System.out.printf("Mining the block containing \"%s\"\n", new String(this.block.transactions[0].ID));
+        System.out.printf("Mining block\"\n", new String(this.block.transactions[0].ID));
         while (nonce <= maxNonce -1) {
           try {
               byte[] toHash = prepareData(nonce++);
@@ -36,6 +36,7 @@ public class ProofOfWork {
                 return;
               }
           } catch (Exception e) {
+              System.out.println("pow hash failed" + e.toString());
 
           }
 
@@ -44,7 +45,7 @@ public class ProofOfWork {
 
 
     private byte[] prepareData(int nonce){
-        System.out.println(nonce);
+        System.out.println("mining attempt: " + nonce);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try {
             for(Transaction tx:this.block.transactions){
@@ -55,7 +56,7 @@ public class ProofOfWork {
             output.write(targetBits);
             output.write(nonce);
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("proofofwork prepareData" + e.toString());
             return output.toByteArray();
         }
 

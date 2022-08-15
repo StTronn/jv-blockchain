@@ -3,29 +3,39 @@ package Blockchain;
 import Transaction.Transaction;
 import Transaction.TXOutput;
 import Transaction.TXInput;
+import Wallet.Wallet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class BlockChainMain {
+    //TODO: cli for creating more scenarios
     public static void main(String[] args) {
-        Blockchain blockchain = new Blockchain();
+        Wallet genesisAddress = new Wallet();
+        System.out.println("genesisAddress Address" + genesisAddress.getAddress());
+
+        Wallet walletReceiver = new Wallet();
+        System.out.println("walletReceiver Address" + walletReceiver.getAddress());
+
+        Blockchain blockchain = new Blockchain(genesisAddress.getAddress());
+        int initialGenesisBalance = getBalance(genesisAddress.getAddress(),blockchain);
 //        blockchain.addBlock("Bob Payed to alice 1 coin");
 //        blockchain.addBlock("Boy payed to janice 1 coin");
 
-        System.out.printf("Balance: %d",getBalance("rishav",blockchain));
-        send("rishav","bob",50,blockchain);
+        System.out.printf("Balance genesisAddress: %d\n",getBalance(genesisAddress.getAddress(),blockchain));
+        send(genesisAddress.getAddress(),walletReceiver.getAddress(),40,blockchain);
 
-        System.out.printf("Rishav Balance: %d",getBalance("rishav",blockchain));
-        System.out.printf("bob Balance: %d",getBalance("bob",blockchain));
 
-        for (int i = 0;i<blockchain.blocks.size();i++){
-            System.out.println("Data: " + new String(blockchain.blocks.get(i).transactions[0].ID));
-            System.out.println("value: " + blockchain.blocks.get(i).transactions[0].vout.get(0).value);
-            System.out.println( "Hash: " + Arrays.toString(blockchain.blocks.get(i).hash));
-            System.out.println( "pow: " + new ProofOfWork(blockchain.blocks.get(i)).validate());
-        }
+        System.out.printf("Balance genesisAddress: %d\n",getBalance(genesisAddress.getAddress(),blockchain));
+        System.out.printf("Balance receiverAddress: %d\n",getBalance(walletReceiver.getAddress(),blockchain));
+
+//        for (int i = 0;i<blockchain.blocks.size();i++){
+//            System.out.println("Data: " + new String(blockchain.blocks.get(i).transactions[0].ID));
+//            System.out.println("value: " + blockchain.blocks.get(i).transactions[0].vout.get(0).value);
+//            System.out.println( "Hash: " + Arrays.toString(blockchain.blocks.get(i).hash));
+//            System.out.println( "pow: " + new ProofOfWork(blockchain.blocks.get(i)).validate());
+//        }
     }
 
     public static int getBalance(String address,Blockchain b){
@@ -37,9 +47,10 @@ public class BlockChainMain {
         return balance;
     }
 
-    public static void send(String from,String to, int amount,Blockchain b){
+    public static void send(String senderAddress,String receiverAddress, int amount,Blockchain b){
+        System.out.printf("Sending txn of amount %d From address: %s To address: %s\n",amount,senderAddress,receiverAddress);
         try {
-            Transaction txn = newUTXOTransaction(from, to, amount, b);
+            Transaction txn = newUTXOTransaction(senderAddress, receiverAddress, amount, b);
             Transaction[] transactions = {txn};
             b.mineBlock(transactions);
         } catch (Exception e){
@@ -47,20 +58,20 @@ public class BlockChainMain {
         }
     }
 
-    public static Transaction newUTXOTransaction(String from, String to,int amount,Blockchain b) throws Exception {
+    public static Transaction newUTXOTransaction(String senderAddress, String receiverAddress,int amount,Blockchain b) throws Exception {
         List<TXOutput> outputs = new ArrayList<TXOutput>();
-        int balance = getBalance(from,b);
+        int balance = getBalance(senderAddress,b);
 
         if(balance<amount) throw new Exception("Not sufficent funds");
 
-        Pair pair = getRequriedInputs(from,amount,b);
+        Pair pair = getRequriedInputs(senderAddress,amount,b);
         List<TXInput> inputs = pair.getInputList();
 
         int totalInputBalance = pair.getAmount();
-        TXOutput outputToReciver = new TXOutput(amount,to);
-        outputs.add(outputToReciver);
+        TXOutput outputToReceiver = new TXOutput(amount,receiverAddress);
+        outputs.add(outputToReceiver);
         if(totalInputBalance>amount){
-            TXOutput outputToSender = new TXOutput(totalInputBalance-amount,from);
+            TXOutput outputToSender = new TXOutput(totalInputBalance-amount,senderAddress);
             outputs.add(outputToSender);
         }
 
@@ -85,7 +96,7 @@ public class BlockChainMain {
             byte[] txId = txn.ID;
             for(int i=0;i<txn.vout.size();i++){
                 TXOutput out=txn.vout.get(i);
-                if(out.canBeUnlockedWithInput(from)){
+                if(out.isLockedWithKey(from)){
                    TXInput in = new TXInput(txId,i,from);
                     inputs.add(in);
                 }

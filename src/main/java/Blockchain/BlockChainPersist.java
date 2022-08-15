@@ -4,7 +4,7 @@ import redis.clients.jedis.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class BlockChainPersist implements  BlockchainInterface {
+public class BlockChainPersist{
     byte[] last_hash;
 
     BlockChainPersist(){
@@ -21,13 +21,13 @@ public class BlockChainPersist implements  BlockchainInterface {
         JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
         try (Jedis jedis = jedisPool.getResource()) {
             String prevHash = jedis.get("last_hash");
-            Block block = new Block(txn,prevHash.getBytes());
-
-            this.last_hash =block.hash;
-            jedis.set("last_hash".getBytes(StandardCharsets.UTF_8),block.hash);
+//            Block block = new Block(txn,prevHash.getBytes());
+//
+//            this.last_hash =block.hash;
+//            jedis.set("last_hash".getBytes(StandardCharsets.UTF_8),block.hash);
 //            jedis.set(block.hash, serializeBlock(block));
 
-            byte[] value = jedis.get(block.hash);
+//            byte[] value = jedis.get(block.hash);
 //            Block dbBlock = this.deSerializeBlock(value);
 //            System.out.println(dbBlock);
         }
