@@ -4,6 +4,7 @@ import Transaction.Transaction;
 import Transaction.TXInput;
 import Transaction.TXOutput;
 
+import java.security.PrivateKey;
 import java.util.*;
 
 public class Blockchain implements BlockchainInterface {
@@ -29,6 +30,27 @@ public class Blockchain implements BlockchainInterface {
     private Block newGenesisBlock(String genesisAddress) {
         List<Transaction> txn = Arrays.asList(Transaction.newCoinbaseTxn(genesisAddress, "paid 100 to rishav"));
         return new Block(txn.toArray(new Transaction[txn.size()]), new byte[0]);
+    }
+
+    public Transaction findTransaction(byte[] ID){
+        for(Block block:blocks){
+            for(Transaction transaction: block.transactions){
+                if(Arrays.equals(transaction.ID, ID)){
+                    return  transaction;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void signTransaction(Transaction tx,PrivateKey privateKey){
+        Map<String,Transaction> prevTxns = new HashMap<String,Transaction>();
+        for (TXInput input:tx.vin){
+           Transaction prevTxn = this.findTransaction(input.txId) ;
+           prevTxns.put(Arrays.toString(input.txId),prevTxn);
+        }
+        tx.sign(privateKey,prevTxns);
+
     }
 
     public List<Transaction> findUnspentTransaction(String address) {

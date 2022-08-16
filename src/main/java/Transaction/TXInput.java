@@ -6,12 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.Signature;
 
 public class TXInput {
     public byte[] txId;
     public int voutIndex;
-    public byte[] Signature;
+    public byte[] signature;
     public byte[] pubKey;
     public String address;
 
@@ -20,6 +19,8 @@ public class TXInput {
         this.txId = txId;
         this.voutIndex = voutIndex;
         this.address = address;
+        this.signature = null;
+        this.pubKey = null;
     }
 
     public boolean usesKey(byte[] pubKeyHash) {
@@ -27,10 +28,10 @@ public class TXInput {
         return lockingHash.equals(pubKeyHash);
     }
 
-    public byte[] hashTxInput() throws IOException {
+    public byte[] hashTxInput() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            if(txId == null) return  new byte[]{};
+            if (txId == null) return new byte[]{};
 
             if (txId != null) outputStream.write(txId);
             outputStream.write(voutIndex);
