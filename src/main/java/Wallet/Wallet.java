@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class Wallet {
     //TODO: make publicKey & privateKey private
-    PublicKey publicKey;
-    PrivateKey privateKey;
+    public PublicKey publicKey;
+    public PrivateKey privateKey;
     private static final byte[] version = new byte[]{0x00} ;
     private static final int addressChecksum = 4;
 

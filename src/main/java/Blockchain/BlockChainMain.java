@@ -12,23 +12,23 @@ import java.util.List;
 public class BlockChainMain {
     //TODO: cli for creating more scenarios
     public static void main(String[] args) {
-        Wallet genesisAddress = new Wallet();
-        System.out.println("genesisAddress Address" + genesisAddress.getAddress());
+        Wallet genesisWallet = new Wallet();
+        System.out.println("genesisWallet Address" + genesisWallet.getAddress());
 
-        Wallet walletReceiver = new Wallet();
-        System.out.println("walletReceiver Address" + walletReceiver.getAddress());
+        Wallet receiverWallet = new Wallet();
+        System.out.println("receiverWallet Address" + receiverWallet.getAddress());
 
-        Blockchain blockchain = new Blockchain(genesisAddress.getAddress());
-        int initialGenesisBalance = getBalance(genesisAddress.getAddress(),blockchain);
+        Blockchain blockchain = new Blockchain(genesisWallet.getAddress());
+        int initialGenesisBalance = getBalance(genesisWallet.getAddress(),blockchain);
 //        blockchain.addBlock("Bob Payed to alice 1 coin");
 //        blockchain.addBlock("Boy payed to janice 1 coin");
 
-        System.out.printf("Balance genesisAddress: %d\n",getBalance(genesisAddress.getAddress(),blockchain));
-        send(genesisAddress.getAddress(),walletReceiver.getAddress(),40,blockchain);
+        System.out.printf("Balance genesisWallet: %d\n",getBalance(genesisWallet.getAddress(),blockchain));
+        send(genesisWallet,receiverWallet.getAddress(),40,blockchain);
 
 
-        System.out.printf("Balance genesisAddress: %d\n",getBalance(genesisAddress.getAddress(),blockchain));
-        System.out.printf("Balance receiverAddress: %d\n",getBalance(walletReceiver.getAddress(),blockchain));
+        System.out.printf("Balance genesisWallet: %d\n",getBalance(genesisWallet.getAddress(),blockchain));
+        System.out.printf("Balance receiverAddress: %d\n",getBalance(receiverWallet.getAddress(),blockchain));
 
 //        for (int i = 0;i<blockchain.blocks.size();i++){
 //            System.out.println("Data: " + new String(blockchain.blocks.get(i).transactions[0].ID));
@@ -47,10 +47,10 @@ public class BlockChainMain {
         return balance;
     }
 
-    public static void send(String senderAddress,String receiverAddress, int amount,Blockchain b){
-        System.out.printf("Sending txn of amount %d From address: %s To address: %s\n",amount,senderAddress,receiverAddress);
+    public static void send(Wallet senderWallet,String receiverAddress, int amount,Blockchain b){
+        System.out.printf("Sending txn of amount %d From address: %s To address: %s\n",amount,senderWallet.getAddress(),receiverAddress);
         try {
-            Transaction txn = newUTXOTransaction(senderAddress, receiverAddress, amount, b);
+            Transaction txn = newUTXOTransaction(senderWallet, receiverAddress, amount, b);
             Transaction[] transactions = {txn};
             b.mineBlock(transactions);
         } catch (Exception e){
@@ -58,7 +58,8 @@ public class BlockChainMain {
         }
     }
 
-    public static Transaction newUTXOTransaction(String senderAddress, String receiverAddress,int amount,Blockchain b) throws Exception {
+    public static Transaction newUTXOTransaction(Wallet senderWallet, String receiverAddress,int amount,Blockchain b) throws Exception {
+        String senderAddress = senderWallet.getAddress();
         List<TXOutput> outputs = new ArrayList<TXOutput>();
         int balance = getBalance(senderAddress,b);
 
@@ -75,7 +76,9 @@ public class BlockChainMain {
             outputs.add(outputToSender);
         }
 
-        return new Transaction(inputs,outputs);
+        Transaction newTxn = new Transaction(inputs,outputs);
+        b.signTransaction(newTxn,senderWallet.privateKey);
+        return  newTxn;
 
 
         //get utxo of from

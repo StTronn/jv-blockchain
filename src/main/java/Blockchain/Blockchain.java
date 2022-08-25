@@ -53,6 +53,15 @@ public class Blockchain implements BlockchainInterface {
 
     }
 
+    public boolean verifyTransaction(Transaction tx){
+        Map<String,Transaction> prevTxns = new HashMap<String,Transaction>();
+        for (TXInput input:tx.vin){
+            Transaction prevTxn = this.findTransaction(input.txId) ;
+            prevTxns.put(Arrays.toString(input.txId),prevTxn);
+        }
+        return tx.verify(prevTxns);
+    }
+
     public List<Transaction> findUnspentTransaction(String address) {
         List<Transaction> unspentTxn = new ArrayList<Transaction>();
 
@@ -76,6 +85,35 @@ public class Blockchain implements BlockchainInterface {
         return unspentTxn;
     }
 
+    public Map<byte[],List<TXOutput>> findUTXO(){
+        Map<byte[],List<TXOutput>> UTXOsMap = new HashMap<byte[],List<TXOutput>>();
+
+        //txId -> [] //list of indexes spent
+        Map<String, List<Integer>> spentTxn = getSpentTxn();
+
+        for (Block block : blocks) {
+            for (Transaction transaction : block.transactions) {
+                for (int index = 0; index < transaction.vout.size(); index++) {
+                    TXOutput out = transaction.vout.get(index);
+                    if (spentTxn.get(Arrays.toString(transaction.ID)) != null) {
+                        ArrayList<Integer> arr = (ArrayList<Integer>) spentTxn.get(Arrays.toString(transaction.ID));
+                        for(Integer spentIndex:arr){
+                            if(spentIndex!=index){
+                                if(!UTXOsMap.containsKey(transaction.ID)){
+                                   UTXOsMap.put(transaction.ID,new ArrayList<TXOutput>());
+                                }
+                                UTXOsMap.get(transaction.ID).add(out);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return UTXOsMap;
+    }
+
     public List<TXOutput> findUTXO(String address) {
         List<TXOutput> utxo = new ArrayList<TXOutput>();
         List<Transaction> transactions = findUnspentTransaction(address);
@@ -90,6 +128,12 @@ public class Blockchain implements BlockchainInterface {
     }
 
     public void mineBlock(Transaction[] transactions) {
+        for (Transaction transaction:transactions){
+            if(!this.verifyTransaction(transaction)){
+               System.out.println("Error!: Invalid Transactions, cannot verify txn");
+               System.exit(1);
+            }
+        }
         addBlock(transactions);
     }
 
@@ -102,6 +146,26 @@ public class Blockchain implements BlockchainInterface {
                 //TODO: check if coinbase txn
                 for (TXInput in : transaction.vin) {
                     if (in.txId != null && in.canUnlockOutput(address)) {
+                        if (spentTxn.get(Arrays.toString(in.txId)) == null) {
+                            List<Integer> a = new ArrayList<Integer>();
+                            a.add(in.voutIndex);
+                            spentTxn.put(Arrays.toString(in.txId), a);
+                        } else {
+                            spentTxn.put(Arrays.toString(in.txId), new ArrayList<Integer>(in.voutIndex));
+                        }
+                    }
+                }
+            }
+        }
+        return spentTxn;
+    }
+
+    private Map<String, List<Integer>> getSpentTxn(){
+        Map<String, List<Integer>> spentTxn = new HashMap<String, List<Integer>>();
+        for (Block block : blocks) {
+            for (Transaction transaction : block.transactions) {
+                for (TXInput in : transaction.vin) {
+                    if (in.txId != null) {
                         if (spentTxn.get(Arrays.toString(in.txId)) == null) {
                             List<Integer> a = new ArrayList<Integer>();
                             a.add(in.voutIndex);

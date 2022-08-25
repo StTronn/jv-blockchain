@@ -5,9 +5,10 @@ import Wallet.Wallet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class TXOutput {
+public class TXOutput implements Serializable {
     public  byte[] pubKeyHash;
     public int value;
 
