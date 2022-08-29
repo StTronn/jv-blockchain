@@ -2,6 +2,7 @@ package UTXOSet;
 
 import Blockchain.Blockchain;
 import Blockchain.Block;
+import Blockchain.SpendableInputs;
 import Transaction.TXInput;
 import Transaction.TXOutput;
 import Transaction.Transaction;
@@ -13,6 +14,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,22 +28,41 @@ public class UTXOSet {
 
     //reIndex
     //todo: use txId as key in redis as well
-    public void reIndex(byte[] pubKeyHash) {
-        Map<byte[], List<TXOutput>> UTXOsMap = blockchain.findUTXO();
+    public void reIndex() {
+        Map<String, List<TXOutput>> UTXOsMap = blockchain.findUTXO();
+
         serialize(UTXOsMap);
 
     }
 
     //findSpendableOutputs
+    public SpendableInputs findSpendableInputs(String address) {
+        int amount = 0;
+        List<TXInput> inputs = new ArrayList<TXInput>();
+        Map<String, List<TXOutput>> UTXOsMap = deserialize();
+        for (String txId : UTXOsMap.keySet()) {
+
+            List<TXOutput> outputs = UTXOsMap.get(txId);
+            for (int index = 0; index < outputs.size(); index++) {
+                TXOutput output = outputs.get(index);
+                if (output.isLockedWithKey(address)) {
+                    amount += output.value;
+                    inputs.add(new TXInput(txId.getBytes(StandardCharsets.UTF_8),index,address));
+                }
+            }
+        }
+        return new SpendableInputs(amount,inputs);
+    }
+
     //findUTXO
-    public List<TXOutput> findUTXO(byte[] pubKeyHash) {
+    public List<TXOutput> findUTXO(String address) {
         List<TXOutput> UTXOs = new ArrayList<TXOutput>();
-        Map<byte[], List<TXOutput>> UTXOsMap = deserialize();
+        Map<String, List<TXOutput>> UTXOsMap = deserialize();
 
 
         for (List<TXOutput> outputs : UTXOsMap.values()) {
             for (TXOutput out : outputs) {
-                if (out.isLockedWithKey(Wallet.getAddressFromHashPubKey(pubKeyHash))) {
+                if (out.isLockedWithKey(address)) {
                     UTXOs.add(out);
                 }
             }
@@ -53,37 +74,42 @@ public class UTXOSet {
 
     //update
     public void update(Block block) {
-        Map<byte[], List<TXOutput>> UTXOsMap = deserialize();
+        Map<String, List<TXOutput>> UTXOsMap = deserialize();
 
         for (Transaction tx : block.transactions) {
             if (tx.isCoinbase()) continue;
 
             for (TXInput in : tx.vin) {
-                List<TXOutput> outputList = UTXOsMap.get(in.txId);
+                List<TXOutput> outputList = UTXOsMap.get(Arrays.toString(in.txId));
                 List<TXOutput> updateOutputList = new ArrayList<TXOutput>();
                 for (int index = 0; index < outputList.size(); index++) {
                     if (index != in.voutIndex) updateOutputList.add(outputList.get(index));
                 }
 
                 if (updateOutputList.size() == 0) {
-                    UTXOsMap.remove(in.txId);
+                    UTXOsMap.remove(Arrays.toString(in.txId));
                 } else {
-                    UTXOsMap.put(in.txId, updateOutputList);
+                    UTXOsMap.put(Arrays.toString(in.txId), updateOutputList);
                 }
             }
-
+            List<TXOutput> newOutputs = new ArrayList<TXOutput>();
+            newOutputs.addAll(tx.vout);
+            UTXOsMap.put(Arrays.toString(tx.ID),newOutputs);
         }
+
+        serialize(UTXOsMap);
 
     }
 
-    private Map<byte[], List<TXOutput>> deserialize() {
+    private Map<String, List<TXOutput>> deserialize() {
         JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
 
         try (Jedis jedis = jedisPool.getResource()) {
             byte[] arrayStream = jedis.get(chainStateKey);
             InputStream in = new ByteArrayInputStream(arrayStream);
             ObjectInputStream objStream = new ObjectInputStream(in);
-            Map<byte[], List<TXOutput>> outputs = (Map<byte[], List<TXOutput>>) objStream.readObject();
+            Map<String, List<TXOutput>> outputs = (Map<String, List<TXOutput>>) objStream.readObject();
+
             return outputs;
 
         } catch (IOException | ClassNotFoundException e) {
@@ -92,7 +118,7 @@ public class UTXOSet {
         return null;
     }
 
-    private void serialize(Map<byte[], List<TXOutput>> UTXOsMap) {
+    private void serialize(Map<String, List<TXOutput>> UTXOsMap) {
 
         JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
 

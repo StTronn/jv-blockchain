@@ -39,7 +39,8 @@ public class BlockChainMain {
     }
 
     public static int getBalance(String address,Blockchain b){
-        List<TXOutput> utxo = b.findUTXO(address);
+//        List<TXOutput> utxo = b.findUTXO(address);
+        List<TXOutput> utxo = b.utxoSet.findUTXO(address);
         int balance=0;
         for(TXOutput out:utxo){
             balance+=out.value;
@@ -100,6 +101,7 @@ public class BlockChainMain {
             for(int i=0;i<txn.vout.size();i++){
                 TXOutput out=txn.vout.get(i);
                 if(out.isLockedWithKey(from)){
+                    System.out.println("sendTxId" + Arrays.toString(txId));
                    TXInput in = new TXInput(txId,i,from);
                     inputs.add(in);
                 }

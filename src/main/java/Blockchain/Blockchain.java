@@ -3,17 +3,21 @@ package Blockchain;
 import Transaction.Transaction;
 import Transaction.TXInput;
 import Transaction.TXOutput;
+import UTXOSet.UTXOSet;
 
 import java.security.PrivateKey;
 import java.util.*;
 
 public class Blockchain implements BlockchainInterface {
     public List<Block> blocks;
+    public UTXOSet utxoSet;
 
     Blockchain(String genesisAddress) {
         Block genesisBlock = newGenesisBlock(genesisAddress);
         this.blocks = new ArrayList<Block>();
         this.blocks.add(genesisBlock);
+        utxoSet = new UTXOSet(this);
+        utxoSet.reIndex();
     }
 
     public void addBlock(Transaction[] transactions) {
@@ -23,6 +27,7 @@ public class Blockchain implements BlockchainInterface {
         Block prevBlock = this.blocks.get(blocks.size() - 1);
         Block newBlock = new Block(transactions, prevBlock.prevBlockHash);
         this.blocks.add(newBlock);
+        utxoSet.update(newBlock);
 
     }
 
@@ -85,8 +90,8 @@ public class Blockchain implements BlockchainInterface {
         return unspentTxn;
     }
 
-    public Map<byte[],List<TXOutput>> findUTXO(){
-        Map<byte[],List<TXOutput>> UTXOsMap = new HashMap<byte[],List<TXOutput>>();
+    public Map<String,List<TXOutput>> findUTXO(){
+        Map<String,List<TXOutput>> UTXOsMap = new HashMap<String,List<TXOutput>>();
 
         //txId -> [] //list of indexes spent
         Map<String, List<Integer>> spentTxn = getSpentTxn();
@@ -99,12 +104,17 @@ public class Blockchain implements BlockchainInterface {
                         ArrayList<Integer> arr = (ArrayList<Integer>) spentTxn.get(Arrays.toString(transaction.ID));
                         for(Integer spentIndex:arr){
                             if(spentIndex!=index){
-                                if(!UTXOsMap.containsKey(transaction.ID)){
-                                   UTXOsMap.put(transaction.ID,new ArrayList<TXOutput>());
+                                if(!UTXOsMap.containsKey(Arrays.toString(transaction.ID))){
+                                   UTXOsMap.put(Arrays.toString(transaction.ID),new ArrayList<TXOutput>());
                                 }
-                                UTXOsMap.get(transaction.ID).add(out);
+                                UTXOsMap.get(Arrays.toString(transaction.ID)).add(out);
                             }
                         }
+                    } else{
+                        if(!UTXOsMap.containsKey(Arrays.toString(transaction.ID))){
+                            UTXOsMap.put(Arrays.toString(transaction.ID),new ArrayList<TXOutput>());
+                        }
+                        UTXOsMap.get(Arrays.toString(transaction.ID)).add(out);
                     }
 
                 }

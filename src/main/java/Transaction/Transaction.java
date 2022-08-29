@@ -54,7 +54,6 @@ public class Transaction {
             in.signature=null;
             in.pubKey = prevTx.vout.get(in.voutIndex).pubKeyHash;
             //checking if
-            System.out.println("checking if updated"+ Arrays.toString(vin.get(index).pubKey));
             copyTx.ID = in.hashTxInput();
             try {
                 Signature ecdsa = Signature.getInstance("SHA256withECDSA");
