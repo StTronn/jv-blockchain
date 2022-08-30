@@ -100,21 +100,22 @@ public class Blockchain implements BlockchainInterface {
             for (Transaction transaction : block.transactions) {
                 for (int index = 0; index < transaction.vout.size(); index++) {
                     TXOutput out = transaction.vout.get(index);
-                    if (spentTxn.get(Arrays.toString(transaction.ID)) != null) {
-                        ArrayList<Integer> arr = (ArrayList<Integer>) spentTxn.get(Arrays.toString(transaction.ID));
+                    String key = Base64.getEncoder().encodeToString(transaction.ID);
+                    if (spentTxn.get(key) != null) {
+                        ArrayList<Integer> arr = (ArrayList<Integer>) spentTxn.get(key);
                         for(Integer spentIndex:arr){
                             if(spentIndex!=index){
-                                if(!UTXOsMap.containsKey(Arrays.toString(transaction.ID))){
-                                   UTXOsMap.put(Arrays.toString(transaction.ID),new ArrayList<TXOutput>());
+                                if(!UTXOsMap.containsKey(key)){
+                                   UTXOsMap.put(key,new ArrayList<TXOutput>());
                                 }
-                                UTXOsMap.get(Arrays.toString(transaction.ID)).add(out);
+                                UTXOsMap.get(key).add(out);
                             }
                         }
                     } else{
                         if(!UTXOsMap.containsKey(Arrays.toString(transaction.ID))){
-                            UTXOsMap.put(Arrays.toString(transaction.ID),new ArrayList<TXOutput>());
+                            UTXOsMap.put(key,new ArrayList<TXOutput>());
                         }
-                        UTXOsMap.get(Arrays.toString(transaction.ID)).add(out);
+                        UTXOsMap.get(key).add(out);
                     }
 
                 }

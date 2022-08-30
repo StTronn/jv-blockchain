@@ -66,10 +66,12 @@ public class BlockChainMain {
 
         if(balance<amount) throw new Exception("Not sufficent funds");
 
-        Pair pair = getRequriedInputs(senderAddress,amount,b);
-        List<TXInput> inputs = pair.getInputList();
 
-        int totalInputBalance = pair.getAmount();
+        SpendableInputs spendableInputs = b.utxoSet.findSpendableInputs(senderAddress);
+        List<TXInput> inputs = spendableInputs.getInputList();
+        System.out.println(inputs.get(0));
+
+        int totalInputBalance = spendableInputs.getAmount();
         TXOutput outputToReceiver = new TXOutput(amount,receiverAddress);
         outputs.add(outputToReceiver);
         if(totalInputBalance>amount){

@@ -13,10 +13,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UTXOSet {
     Blockchain blockchain;
@@ -27,7 +24,7 @@ public class UTXOSet {
     }
 
     //reIndex
-    //todo: use txId as key in redis as well
+    //todo: use different key than converting byte[] to string for txId
     public void reIndex() {
         Map<String, List<TXOutput>> UTXOsMap = blockchain.findUTXO();
 
@@ -40,14 +37,14 @@ public class UTXOSet {
         int amount = 0;
         List<TXInput> inputs = new ArrayList<TXInput>();
         Map<String, List<TXOutput>> UTXOsMap = deserialize();
-        for (String txId : UTXOsMap.keySet()) {
-
-            List<TXOutput> outputs = UTXOsMap.get(txId);
+        for (String txIdString : UTXOsMap.keySet()) {
+            List<TXOutput> outputs = UTXOsMap.get(txIdString);
             for (int index = 0; index < outputs.size(); index++) {
                 TXOutput output = outputs.get(index);
                 if (output.isLockedWithKey(address)) {
                     amount += output.value;
-                    inputs.add(new TXInput(txId.getBytes(StandardCharsets.UTF_8),index,address));
+                    byte[] txId = Base64.getDecoder().decode(txIdString);
+                    inputs.add(new TXInput(txId,index,address));
                 }
             }
         }
@@ -80,21 +77,24 @@ public class UTXOSet {
             if (tx.isCoinbase()) continue;
 
             for (TXInput in : tx.vin) {
-                List<TXOutput> outputList = UTXOsMap.get(Arrays.toString(in.txId));
+                String key = Base64.getEncoder().encodeToString(in.txId);
+
+                List<TXOutput> outputList = UTXOsMap.get(key);
                 List<TXOutput> updateOutputList = new ArrayList<TXOutput>();
                 for (int index = 0; index < outputList.size(); index++) {
                     if (index != in.voutIndex) updateOutputList.add(outputList.get(index));
                 }
 
                 if (updateOutputList.size() == 0) {
-                    UTXOsMap.remove(Arrays.toString(in.txId));
+                    UTXOsMap.remove(key);
                 } else {
-                    UTXOsMap.put(Arrays.toString(in.txId), updateOutputList);
+                    UTXOsMap.put(key, updateOutputList);
                 }
             }
             List<TXOutput> newOutputs = new ArrayList<TXOutput>();
             newOutputs.addAll(tx.vout);
-            UTXOsMap.put(Arrays.toString(tx.ID),newOutputs);
+            String txKey = Base64.getEncoder().encodeToString(tx.ID);
+            UTXOsMap.put(txKey,newOutputs);
         }
 
         serialize(UTXOsMap);
