@@ -4,10 +4,11 @@ import Wallet.Wallet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-public class TXInput {
+public class TXInput implements Serializable {
     public byte[] txId;
     public int voutIndex;
     public byte[] signature;

@@ -20,7 +20,7 @@ public class BlockChainMain {
 
         Blockchain blockchain = new Blockchain(genesisWallet.getAddress());
         int initialGenesisBalance = getBalance(genesisWallet.getAddress(),blockchain);
-//        blockchain.addBlock("Bob Payed to alice 1 coin");
+//        blockchain.addBlock("Bob Payed to alice 1 coin")
 //        blockchain.addBlock("Boy payed to janice 1 coin");
 
         System.out.printf("Balance genesisWallet: %d\n",getBalance(genesisWallet.getAddress(),blockchain));

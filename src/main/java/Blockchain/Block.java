@@ -5,11 +5,12 @@ import Transaction.Transaction;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 
-public class Block {
+public class Block implements Serializable {
     public String timeStamp;
     public Transaction[] transactions;
     public byte[] prevBlockHash;

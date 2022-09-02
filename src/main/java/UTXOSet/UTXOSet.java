@@ -118,6 +118,8 @@ public class UTXOSet {
         return null;
     }
 
+
+    //TODO: seperate out serialize and setting in  redis
     private void serialize(Map<String, List<TXOutput>> UTXOsMap) {
 
         JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);

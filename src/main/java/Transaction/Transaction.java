@@ -2,12 +2,13 @@ package Transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class Transaction {
+public class Transaction implements Serializable {
     static final int reward = 100;
     //hash of the current values
     public byte[] ID;
