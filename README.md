@@ -5,7 +5,8 @@ A simple Blockchain in java
 - [x] Transaction 
 - [x] Wallet
 - [x] UTXOSet
-- [ ] Persistence 
+- [x] Persistence 
+- [ ] cli
 - [ ] Merkle Tree (Transaction)
 - [ ] Basic Scripting/P2PKH (Transaction)
 - [ ] Network(p2p)/Node 
