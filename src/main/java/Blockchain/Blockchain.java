@@ -282,6 +282,7 @@ public class Blockchain implements BlockchainInterface {
             setBlock(genesisBlock.hash,genesisBlock);
             this.lastHash=genesisBlock.hash;
         }
+        jedisPool.close();
         return  newGenesisBlock(genesisAddress);
     }
 
