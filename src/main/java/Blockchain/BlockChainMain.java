@@ -17,6 +17,9 @@ public class BlockChainMain {
 
         Wallet receiverWallet = new Wallet();
         System.out.println("receiverWallet Address" + receiverWallet.getAddress());
+        List<Wallet> walletList = Wallet.getLoadedWallets();
+
+        System.out.println(walletList.size());
 
         Blockchain blockchain = new Blockchain(genesisWallet.getAddress());
         int initialGenesisBalance = getBalance(genesisWallet.getAddress(),blockchain);

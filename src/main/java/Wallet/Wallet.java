@@ -1,21 +1,30 @@
 package Wallet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.*;
-import java.util.Arrays;
+import Blockchain.Block;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
-public class Wallet {
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Wallet implements Serializable {
     //TODO: make publicKey & privateKey private
     public PublicKey publicKey;
     public PrivateKey privateKey;
     private static final byte[] version = new byte[]{0x00} ;
     private static final int addressChecksum = 4;
+    private static final byte[] walletStoreKey="wallet".getBytes(StandardCharsets.UTF_8);
 
     //generate wallet
     public Wallet() {
         try {
             newKeyPair();
+            saveWallet();
         } catch (Exception e) {
             System.out.println(e.fillInStackTrace());
             System.out.print(e.toString());
@@ -39,6 +48,88 @@ public class Wallet {
         byte[] fullPayload = appendChecksum(versionPayload,checksum);
         return Base58.encode(fullPayload);
     }
+
+     public static byte[] hashPubKey(byte[] key) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA256");
+            md.update(key);
+            return Ripemd160.getHash(md.digest());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    //getLoadedWallets
+    public static  List<Wallet> getLoadedWallets(){
+        List<Wallet> walletList = new ArrayList<Wallet>();
+        JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
+        try (Jedis jedis = jedisPool.getResource()) {
+            List<byte[]> walletListBytes= jedis.lrange(walletStoreKey,0,-1);
+            for(byte[] walletbytes:walletListBytes){
+               walletList.add(deserialize(walletbytes));
+            }
+        }
+        jedisPool.close();
+        return  walletList;
+    }
+
+    //save Wallet into redis
+    public void saveWallet(){
+        byte[] walletSerialized = serialize();
+
+        JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost", 6379);
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.lpush(walletStoreKey,walletSerialized);
+//            if(!jedis.exists(walletStoreKey)){
+//
+//            }
+
+        }
+        jedisPool.close();
+
+    }
+
+    //generate keypair
+    private void newKeyPair() throws Exception {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+
+        keyGen.initialize(256, random);
+
+        KeyPair pair = keyGen.generateKeyPair();
+        privateKey = pair.getPrivate();
+        publicKey = pair.getPublic();
+    }
+
+    //deserealize
+    private static Wallet deserialize(byte[] byteArrayWallet){
+        try{
+            InputStream in = new ByteArrayInputStream(byteArrayWallet);
+            ObjectInputStream objStream = new ObjectInputStream(in);
+            Wallet wallet = (Wallet) objStream.readObject();
+            return wallet;
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+
+    }
+    //serialize
+    private byte[] serialize(){
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            ObjectOutputStream o = new ObjectOutputStream(b);
+            o.writeObject(this);
+            return b.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     private static byte[] appendChecksum(byte[] versionPayload,byte[] checksum)  {
         try {
@@ -83,25 +174,6 @@ public class Wallet {
 
     }
 
-    static public byte[] hashPubKey(byte[] key) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA256");
-            md.update(key);
-            return Ripemd160.getHash(md.digest());
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
-    private void newKeyPair() throws Exception {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC");
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-
-        keyGen.initialize(256, random);
-
-        KeyPair pair = keyGen.generateKeyPair();
-        privateKey = pair.getPrivate();
-        publicKey = pair.getPublic();
-    }
 }
 
