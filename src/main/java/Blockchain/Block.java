@@ -1,5 +1,7 @@
 package Blockchain;
 
+import MerkleTree.MerkleNode;
+import MerkleTree.MerkleTree;
 import Transaction.Transaction;
 
 import java.io.ByteArrayOutputStream;
@@ -9,6 +11,8 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Block implements Serializable {
     public String timeStamp;
@@ -16,11 +20,20 @@ public class Block implements Serializable {
     public byte[] prevBlockHash;
     public byte[] hash;
     public int nonce;
+    public byte[] merkleRootHash;
+    public MerkleTree merkleTree;
 
     Block(Transaction[] transactions, byte[] prevBlockHash){
         this.timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new java.util.Date());
         this.transactions=transactions;
         this.prevBlockHash=prevBlockHash;
+        List<byte[]> hashTx= new ArrayList<byte[]>();
+        for(Transaction tx:transactions){
+           hashTx.add(tx.hashTx());
+        }
+        merkleTree = new MerkleTree(hashTx);
+        merkleRootHash=merkleTree.getRoot().data;
+
         try {
             ProofOfWork pow = new ProofOfWork(this);
             pow.run();

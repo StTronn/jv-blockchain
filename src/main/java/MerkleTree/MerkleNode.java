@@ -2,11 +2,12 @@ package MerkleTree;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class MerkleNode {
+public class MerkleNode implements Serializable {
     public MerkleNode left;
     public MerkleNode right;
     public byte[] data;

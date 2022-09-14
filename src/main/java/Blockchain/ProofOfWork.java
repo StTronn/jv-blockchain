@@ -53,6 +53,7 @@ public class ProofOfWork {
             }
             output.write(this.block.timeStamp.getBytes(StandardCharsets.UTF_8));
             output.write(this.block.prevBlockHash);
+            output.write(this.block.merkleRootHash);
             output.write(targetBits);
             output.write(nonce);
         } catch (Exception e) {

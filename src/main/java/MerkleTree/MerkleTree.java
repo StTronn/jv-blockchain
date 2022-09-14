@@ -1,22 +1,27 @@
 package MerkleTree;
 
-import java.io.ByteArrayOutputStream;
+
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class MerkleTree {
+public class MerkleTree implements Serializable {
     MerkleNode rootNode;
     List<MerkleNode> nodes;
 
-    MerkleTree(byte[][] arrayOfByteArray) {
+    public MerkleTree(byte[][] arrayOfByteArray) {
         List<byte[]> listOfByteArray = new ArrayList<byte[]>();
         Collections.addAll(listOfByteArray, arrayOfByteArray);
         generateMerkleTree(listOfByteArray);
 
     }
 
-    MerkleTree(List<byte[]> listOfByteArray) {
+    public MerkleTree(List<byte[]> listOfByteArray) {
         generateMerkleTree(listOfByteArray);
+    }
+
+    public MerkleNode getRoot(){
+        return this.rootNode;
     }
 
 
